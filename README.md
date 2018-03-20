@@ -61,21 +61,21 @@ In either cases you may have a problem, but also may not.
 
 ### How it works? 
 Testoscope hooks to exec_query of a connection adapter, 
-for all queries runs them two times: 
-first with EXPLAIN and analyze it, 
-and the second - is for original a caller purpose.
+when sql query reach exec_query it runs two times: 
+first with EXPLAIN for tstoscope to analyze, 
+and the second - for original a caller purpose.
 
-After achieving explain result, it simply search for configured unintended behaviour markers, 
+After retrieving explain result, testoscope search for specified unintended behaviour markers, 
 like a Seq Scan substring in Postgres QUERY PLAN explained, and also collects indexes used by all queries for a final summary.
 
 ### Unintended Behaviours
-By default unintended behaviours are preconfigured for PosgtreSQL and all tables:
+By default markers are preconfigured for PosgtreSQL and full list of tables:
         
      config.unintened_key_words = ['Seq Scan', 'One-Time Filter']
      config.tables = :all
 
 But you can set any regexp you want to track inside EXPLAIN results, 
-and also you can track not all tables, but only specified ones:
+and also you can track partial list of tables:
     
     config.tables = ['cards', 'users']
   
@@ -85,32 +85,42 @@ and also you can track not all tables, but only specified ones:
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'testoscope'
+group :test do 
+    gem 'testoscope'
+end
+
 ```
 
 And then execute:
 
     $ bundle
-
-Or install it yourself as:
-
-    $ gem install testoscope
-
+    
 ## Usage
 
 In test_helper.rb:
 
     require 'testoscope'
     
-    #since doubling all requests to DB is not free, 
-    #you may use ENV variable to run on demand 
+    # since doubling all requests to DB is not free, 
+    # you may use ENV variable to run on demand 
     if ENV[:RUN_TESTOSCOPE]
         Testoscope.configure { |c| 
+             # include only trace from folders
              c.back_trace_paths = [Rails.root.to_s]
+             
+             # additionaly exclude subfolders 
              c.back_trace_exclude_paths = ["#{Rails.root.to_s}/test", "#{Rails.root.to_s}/spec"]
+             
+             # unintended behaviour markers
              c.unintened_key_words = ['Seq Scan', 'One-Time Filter']
+             
+             # set true to raise error on unintended behaviour 
              c.raise_when_unintended = false
+             
+             # true to analyze everything, false to analize only by demand using suspend_global_analyze
              c.analyze = true
+             
+             # :all - to complete list, or array of specific table names: [ 'users', 'comments' ... ] 
              c.tables = :all
         }
         
