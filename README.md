@@ -2,7 +2,7 @@
 
 Inspect in practice how well is your data organized while testing your application! 
 
-##Features
+## Features
 Finds out of the box: sequential scans, dummy One-Timer calls to DB, unused indexes.
 
 Highly customizable: you can define your own unintended markers, inspect only part of you tables set and so.
@@ -12,17 +12,18 @@ that way you can protect from perfomance break-out in production.
 
 Best suits with high-level testing: controller tests, integration tests, api tests and so. 
 
+Output example: 
 ![alt text](https://github.com/alekseyl/testoscope/raw/master/results.png "results")
 
-##Out of the box inspections
+## Out of the box inspections
 Sequential scans, dummy One-Timer calls to DB, unused indexes
 
-###Sequential scans 
+### Sequential scans 
 It can happend when you are:
 * truly missing an index
 * when you are intend to use a partial index but unintentionally miss index condition in a query 
 
-###One-Timers 
+### One-Timers 
 Some times ORM can produce dummy query, in Postgres Query Plan they look like this:
  
                   QUERY PLAN
@@ -48,7 +49,7 @@ but you are occupying DB connection pool and cluttering your channel with empty 
 
 So it's better to change the underlying logic other than be OK with it. 
 
-###Unused index
+### Unused index
 
 Testoscope can find and warn you about unused index. Possible reasons 
 for them are:
@@ -58,7 +59,7 @@ for them are:
 
 In either cases you may have a problem, but also may not.
 
-###How it works? 
+### How it works? 
 Testoscope hooks to exec_query of a selected default_adapter, 
 for all queries runs them two times one - wrapped in EXPLAIN and analyze it, 
 and the second time is for original a caller purpose.
