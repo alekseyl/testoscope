@@ -3,14 +3,14 @@
 Inspect in practice how well is your data organized while testing your application! 
 
 ## Features
-Finds out of the box: sequential scans, dummy One-Timer calls to DB, unused indexes.
+**Finds out of the box:** sequential scans, dummy One-Timer calls to DB, unused indexes.
 
-Highly customizable: you can define your own unintended markers, inspect only part of you tables set and so.
+**Highly customizable:** you can define your own unintended markers, inspect only part of you tables set and so.
 
-May work in a error mode raising exception on unintended behaviour, 
+May work in a **error mode** raising exception on unintended behaviour, 
 that way you can protect from perfomance break-out in production. 
 
-Best suits with high-level testing: controller tests, integration tests, api tests and so. 
+Best suits with high-level testing: **controller tests, integration tests, api tests** and so. 
 
 Output example: 
 ![alt text](https://github.com/alekseyl/testoscope/raw/master/results.png "results")
