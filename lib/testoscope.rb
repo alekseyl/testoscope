@@ -3,7 +3,7 @@ require "testoscope/version"
 module Testoscope
   class Config
     attr_accessor :analyze, :back_trace_paths, :back_trace_exclude_paths,
-                  :unintened_key_words, :analyze, :tables, :raise_when_unintended
+                  :unintened_key_words, :analyze, :tables, :raise_when_unintended, :pp_class
 
     def initialize
       self.back_trace_paths = [Rails.root.to_s]
@@ -11,6 +11,7 @@ module Testoscope
       self.unintened_key_words = ['Seq Scan', 'One-Time Filter']
       self.raise_when_unintended = false
       self.analyze = true
+      self.pp_class = "::ActiveRecord::ConnectionAdapters::#{::ActiveRecord::Base.connection.adapter_name}::ExplainPrettyPrinter".constantize
       self.tables = :all
     end
   end
@@ -97,6 +98,8 @@ module Testoscope
 
       explain = yield
 
+      explain = config.pp_class.method(:pp).arity.abs == 1 ? config.pp_class.new.pp( explain ) : config.pp_class.new.pp( explain, 0 )
+
       app_trace = caller_locations( 2 ).map(&:to_s).select { |st|
         self.config.back_trace_paths.any?{|pth| st[pth]} && !self.config.back_trace_exclude_paths.any?{|epth| st[epth]}
       }
@@ -123,9 +126,8 @@ module Testoscope
 
   module AdapterUpgrade
     def exec_query(sql, name = "SQL", binds = [], prepare: false)
-      PGAnalyzer.analyze(sql) {
-        ::ActiveRecord::ConnectionAdapters::PostgreSQL::ExplainPrettyPrinter.new
-          .pp(super( 'EXPLAIN ' + sql, "EXPLAIN", binds, prepare: false) )
+      Testoscope.analyze(sql) {
+        super( 'EXPLAIN ' + sql, "EXPLAIN", binds, prepare: false)
       }
       super( sql, name, binds, prepare: prepare )
     end

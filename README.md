@@ -42,7 +42,7 @@ and in ORM it doesn't look alarming:
 
     sub_tags.where( name: names )
   
-So when names is empty, we get a dummy request.
+But when names is empty, we get a dummy request.
 
 They are not a big deal from a performance perspective, 
 but you are occupying DB connection pool and cluttering your channel with empty noise.
@@ -60,15 +60,16 @@ for them are:
 In either cases you may have a problem, but also may not.
 
 ### How it works? 
-Testoscope hooks to exec_query of a selected default_adapter, 
-for all queries runs them two times one - wrapped in EXPLAIN and analyze it, 
-and the second time is for original a caller purpose.
+Testoscope hooks to exec_query of a connection adapter, 
+for all queries runs them two times: 
+first with EXPLAIN and analyze it, 
+and the second - is for original a caller purpose.
 
-After achieving explain result in a string, it search for an unintended behaviour markers, 
-like a Seq Scan substring in Postgres QUERY PLAN explained and collects indexes used by all queries for final summary.
+After achieving explain result, it simply search for configured unintended behaviour markers, 
+like a Seq Scan substring in Postgres QUERY PLAN explained, and also collects indexes used by all queries for a final summary.
 
 ### Unintended Behaviours
-By default unintended behaviours are preconfigured for PosgtreSQL EXPLAIN format and all tables:
+By default unintended behaviours are preconfigured for PosgtreSQL and all tables:
         
      config.unintened_key_words = ['Seq Scan', 'One-Time Filter']
      config.tables = :all
