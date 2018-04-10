@@ -114,7 +114,8 @@ module Testoscope
         self.add_unintended_behaviour( sql, explain, app_trace )
       end
 
-      explain.scan(/Index Scan using \w+/).each{|found| add_index_used(sql, explain, found[17..-1]) }
+      explain.scan(/Index Scan using (\w+)|Index Scan on (\w+)|Index Scan Backward using (\w+)/)
+        .each{|found| add_index_used(sql, explain, found.compact.first ) }
     end
   end
 
@@ -127,7 +128,7 @@ module Testoscope
   module AdapterUpgrade
     def exec_query(sql, name = "SQL", binds = [], prepare: false)
       Testoscope.analyze(sql) {
-        super( 'EXPLAIN ' + sql, "EXPLAIN", binds, prepare: false)
+        super(  sql['EXPLAIN'] ? sql : 'EXPLAIN ' + sql, "EXPLAIN", binds, prepare: false)
       }
       super( sql, name, binds, prepare: prepare )
     end
