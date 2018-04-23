@@ -129,7 +129,16 @@ In test_helper.rb:
         }
     end 
 
-
+## TODO
+Add inspection scripts for suspicious behaviours, like when you using scopes in query and 
+additionaly instantinate them later:
+```ruby
+@users = User.scope
+# collection doesn't instantinate, and used as subquery, it's OK if we don;t need instatination, 
+# but we instatinate it later 
+@docs = Doc.for_users( @users )
+render { users: @users, docs: @docs }
+```
 
 ## Contributing
 
