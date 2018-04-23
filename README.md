@@ -130,7 +130,8 @@ In test_helper.rb:
     end 
 
 ## TODO
-Add inspection scripts for suspicious behaviours, like when you using scopes in query and 
+* Add Tests!
+* Add inspection scripts for suspicious behaviours, like when you using scopes in query and 
 additionaly instantinate them later:
 ```ruby
 @users = User.scope
