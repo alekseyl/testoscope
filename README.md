@@ -3,7 +3,7 @@
 Inspect in practice how well is your data organized while testing your application! 
 
 ## Features
-**Finds out of the box:** sequential scans, dummy One-Timer calls to DB, unused indexes.
+**Finds out of the box:** sequential scans, dummy One-Timer calls to DB, unused indexes. Out of the box it works for PG only, if you need to use it with MySQL or other DB, you need to do some customization.
 
 **Highly customizable:** you can define your own unintended markers, inspect only part of you tables set and so.
 
@@ -57,7 +57,9 @@ for them are:
 * you already have another index more suitable which is preferred by the planner 
 * your tests doesn't cover all use-cases 
 
-In either cases you may have a problem, but also may not.
+In either cases you may have a problem, but also may not. 
+
+Rem: It seems to be **much less useful** than I thought, at least with PG, because lack of statistic or tiny DB size for test environment makes it very vulnerable to false positive index assumptions. Still you can use it within staging server and get the info from less automatic testing.
 
 ### How it works? 
 Testoscope hooks to exec_query of a connection adapter, 
