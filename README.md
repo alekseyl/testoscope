@@ -5,7 +5,7 @@ Inspect in practice how well is your data organized while testing your applicati
 ## Features
 **Finds out of the box:** sequential scans, dummy One-Timer calls to DB, unused indexes. Out of the box it works for PG only, if you need to use it with MySQL or other DB, you need to do some customization.
 
-**Highly customizable:** you can define your own unintended markers, inspect only part of you tables set and so.
+**Highly customizable:** you can define your own unintended markers, inspect only some of you tables and so.
 
 May work in a **error mode** raising exception on unintended behaviour, 
 that way you can protect from perfomance break-out in production. 
