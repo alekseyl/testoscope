@@ -129,7 +129,7 @@ module Testoscope
     def exec_query(sql, name = "SQL", binds = [], prepare: false)
       Testoscope.analyze(sql) {
         super(  sql['EXPLAIN'] ? sql : 'EXPLAIN ' + sql, "EXPLAIN", binds, prepare: false)
-      }
+      } if sql['SELECT']
       super( sql, name, binds, prepare: prepare )
     end
   end
